@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Grand Stay | Hotel Management</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="brand">
+      ⌂ GRAND STAY
+      <small>HOTEL MANAGEMENT</small>
+    </div>
+
+    <div class="nav-label">WORKSPACE</div>
+    <button class="nav active" data-page="dashboard">▦ Dashboard</button>
+    <button class="nav" data-page="rooms">▤ Rooms</button>
+    <button class="nav" data-page="bookings">▣ Bookings</button>
+    <button class="nav" data-page="food">♨ Food Orders</button>
+    <button class="nav" data-page="billing">₹ Billing</button>
+  </aside>
+
+  <main>
+    <header>
+      <div>
+        <h1 id="title">Dashboard Overview</h1>
+        <p>Hotel operations at a glance</p>
+      </div>
+      <button class="primary" onclick="openBooking()">+ New Booking</button>
+    </header>
+
+    <section id="dashboard" class="page active">
+      <div class="welcome">
+        <h2>Make every stay exceptional.</h2>
+        <p>Manage rooms, guests, food orders and billing from one place.</p>
+      </div>
+
+      <div class="stats">
+        <div class="card">
+          <span class="stat-label">Total Rooms</span>
+          <strong class="stat-number">20</strong>
+          <small>4 categories</small>
+        </div>
+
+        <div class="card">
+          <span class="stat-label">Available Rooms</span>
+          <strong class="stat-number" id="available-stat">20</strong>
+          <small>Ready for guests</small>
+        </div>
+
+        <div class="card">
+          <span class="stat-label">Active Bookings</span>
+          <strong class="stat-number" id="booking-stat">0</strong>
+          <small>Current guests</small>
+        </div>
+
+        <div class="card">
+          <span class="stat-label">Active Bill Value</span>
+          <strong class="stat-number" id="revenue-stat">₹0</strong>
+          <small>Before tax</small>
+        </div>
+      </div>
+
+      <div class="columns">
+        <div class="panel">
+          <h3>Room Availability</h3>
+          <div class="room-summary" id="summary"></div>
+        </div>
+
+        <div class="panel">
+          <h3>Quick Actions</h3>
+
+          <div class="quick">
+            <span>Create a booking</span>
+            <button class="secondary" onclick="openBooking()">Open</button>
+          </div>
+
+          <div class="quick">
+            <span>Manage food orders</span>
+            <button class="secondary" onclick="showPage('food')">Open</button>
+          </div>
+
+          <div class="quick">
+            <span>Generate an invoice</span>
+            <button class="secondary" onclick="showPage('billing')">Open</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3>Recent Bookings</h3>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>GUEST</th>
+                <th>ROOM</th>
+                <th>STAY</th>
+                <th>STATUS</th>
+              </tr>
+            </thead>
+            <tbody id="recent"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="rooms" class="page">
+      <div class="panel directory-heading">
+        <h3>Room Directory</h3>
+        <p>20 rooms across four categories.</p>
+      </div>
+      <div class="room-grid" id="room-grid"></div>
+    </section>
+
+    <section id="bookings" class="page">
+      <div class="toolbar">
+        <input
+          id="search"
+          placeholder="Search guest, phone or booking ID..."
+          oninput="renderBookings()"
+        >
+        <button class="primary" onclick="openBooking()">+ Booking</button>
+      </div>
+
+      <div class="panel">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>GUEST</th>
+                <th>ROOM</th>
+                <th>NIGHTS</th>
+                <th>FOOD</th>
+                <th>STATUS</th>
+                <th>ACTION</th>
+              </tr>
+            </thead>
+            <tbody id="booking-table"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="food" class="page">
+      <div class="columns">
+        <div class="panel">
+          <h3>Food Menu</h3>
+          <div class="menu" id="menu"></div>
+        </div>
+
+        <div class="panel">
+          <h3>Add Food Order</h3>
+
+          <form id="food-form">
+            <label>
+              Active Booking
+              <select id="food-booking" required></select>
+            </label>
+
+            <label>
+              Food Item
+              <select id="food-item"></select>
+            </label>
+
+            <label>
+              Quantity
+              <input
+                id="food-qty"
+                type="number"
+                min="1"
+                max="50"
+                value="1"
+                required
+              >
+            </label>
+
+            <div class="total">
+              <span>Item Total</span>
+              <span id="food-total">₹30</span>
+            </div>
+
+            <button class="primary" type="submit">Add Order</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <section id="billing" class="page">
+      <div class="panel">
+        <h3>Checkout & Invoice</h3>
+
+        <form id="bill-form">
+          <label>
+            Active Booking
+            <select id="bill-booking" required></select>
+          </label>
+
+          <button class="primary" type="submit">Calculate Invoice</button>
+        </form>
+
+        <div id="invoice" class="empty">
+          Choose a booking to preview its invoice.
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      Grand Stay Hotel Management · Educational project demo
+    </footer>
+  </main>
+</div>
+
+<dialog id="booking-dialog">
+  <form id="booking-form">
+    <h2>Create Booking</h2>
+
+    <label>
+      Guest Name
+      <input id="guest-name" required maxlength="80">
+    </label>
+
+    <label>
+      Phone Number
+      <input id="guest-phone" required maxlength="20">
+    </label>
+
+    <label>
+      Room Category
+      <select id="room-type">
+        <option value="0">Single Non-AC — ₹1,000/night</option>
+        <option value="1">Single AC — ₹1,500/night</option>
+        <option value="2">Double AC — ₹2,500/night</option>
+        <option value="3">Deluxe AC — ₹4,000/night</option>
+      </select>
+    </label>
+
+    <label>
+      Number of Nights
+      <input
+        id="nights"
+        type="number"
+        min="1"
+        max="365"
+        value="1"
+        required
+      >
+    </label>
+
+    <p id="room-note"></p>
+
+    <button class="secondary" type="button" onclick="closeBooking()">
+      Cancel
+    </button>
+
+    <button class="primary" type="submit">Confirm Booking</button>
+  </form>
+</dialog>
+
+<div id="notice" role="status"></div>
+
+<script src="script.js"></script>
+</body>
+</html>
