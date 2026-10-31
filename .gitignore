@@ -1,0 +1,18 @@
+# Compiled C++ files
+*.exe
+*.o
+*.obj
+
+# Generated folders and editor settings
+build/
+.vscode/
+
+# Old/local data files
+hospital.dat
+hotel_bookings.txt
+
+# SQLite local database
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
