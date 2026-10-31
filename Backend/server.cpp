@@ -42,6 +42,43 @@ int main() {
         }
     );
 
+        server.Get("/api/rooms",
+        [](const httplib::Request&, httplib::Response& response) {
+            json rooms = json::array({
+                {
+                    {"type", 0},
+                    {"name", "Single Non-AC"},
+                    {"roomStart", 101},
+                    {"roomEnd", 105},
+                    {"pricePerNight", 1000}
+                },
+                {
+                    {"type", 1},
+                    {"name", "Single AC"},
+                    {"roomStart", 201},
+                    {"roomEnd", 205},
+                    {"pricePerNight", 1500}
+                },
+                {
+                    {"type", 2},
+                    {"name", "Double AC"},
+                    {"roomStart", 301},
+                    {"roomEnd", 305},
+                    {"pricePerNight", 2500}
+                },
+                {
+                    {"type", 3},
+                    {"name", "Deluxe AC"},
+                    {"roomStart", 401},
+                    {"roomEnd", 405},
+                    {"pricePerNight", 4000}
+                }
+            });
+
+            response.set_content(rooms.dump(), "application/json");
+        }
+    );
+
     std::cout << "Website: http://127.0.0.1:8080\n";
     std::cout << "API test: http://127.0.0.1:8080/api/health\n";
     std::cout << "Stop: Ctrl+C\n";
